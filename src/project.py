@@ -1,30 +1,6 @@
 """Project 3: Pathfinder.
 
 Implement graph utilities for an undirected weighted map.
-
-Rules:
-- Python 3.11+
-- stdlib only
-- weights must be positive integers (no zero or negative weights)
-- graph representation: dict[str, dict[str, int]]
-
-Example graph:
-
-    {
-        "Gate": {
-            "Food Court": 4,
-            "Stage": 7,
-        },
-        "Food Court": {
-            "Gate": 4,
-            "Rest Area": 3,
-        },
-    }
-
-Students:
-- Replace each NotImplementedError with your implementation.
-- Keep function names and parameters exactly as written.
-- Add helper functions if they make your code clearer.
 """
 
 from __future__ import annotations
@@ -32,130 +8,185 @@ from __future__ import annotations
 from collections import deque
 import heapq
 import json
-import math
-from pathlib import Path
 
 
 Graph = dict[str, dict[str, int]]
 
 
 def load_graph(path: str) -> Graph:
-    """Load a weighted graph from a JSON file.
+    """Load a weighted graph from a JSON file."""
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception as e:
+        raise ValueError(f"Could not load file: {e}")
 
-    The JSON file must contain a dictionary of dictionaries:
+    if type(data) is not dict:
+        raise ValueError("JSON file must contain a dictionary at the top level.")
 
-        {
-            "A": {"B": 3, "C": 5},
-            "B": {"A": 3},
-            "C": {"A": 5}
-        }
+    for node, neighbors in data.items():
+        if type(neighbors) is not dict:
+            raise ValueError(f"Neighbors for {node} must be a dictionary.")
 
-    Requirements:
-    - Return the loaded graph.
-    - Raise ValueError if the JSON top level is not a dictionary.
-    - Raise ValueError if any neighbor list is not a dictionary.
-    - Raise ValueError if any weight is not a positive integer.
-    - Raise ValueError if any weight is 0 or negative.
+        for neighbor, weight in neighbors.items():
+            # Using type() instead of isinstance() to safely avoid booleans acting as ints
+            if type(weight) is not int:
+                raise ValueError(f"Weight from {node} to {neighbor} must be an integer.")
+            if weight <= 0:
+                raise ValueError(f"Weight from {node} to {neighbor} must be a positive integer.")
 
-    Note:
-    This project uses an undirected graph. Your own map should include both
-    directions for every edge, such as A -> B and B -> A.
-    """
-    raise NotImplementedError
+    return data
 
 
 def get_neighbors(graph: Graph, node: str) -> dict[str, int]:
-    """Return the neighbors and weights for node.
-
-    If node is missing, return an empty dictionary.
-
-    Example:
-        graph = {"A": {"B": 4}}
-        get_neighbors(graph, "A") -> {"B": 4}
-        get_neighbors(graph, "Z") -> {}
-    """
-    raise NotImplementedError
+    """Return the neighbors and weights for node."""
+    if node in graph:
+        return graph[node]
+    return {}
 
 
 def bfs_order(graph: Graph, start: str) -> list[str]:
-    """Return nodes in breadth-first traversal order.
+    """Return nodes in breadth-first traversal order."""
+    if start not in graph:
+        return []
 
-    Requirements:
-    - If start is missing, return [].
-    - Use a queue.
-    - Use a visited set.
-    - Follow the neighbor order from the dictionary.
-    - Ignore weights for BFS traversal.
+    visited = {start}
+    queue = deque([start])
+    order = []
 
-    Complexity target:
-    - Time: O(V + E)
-    - Space: O(V)
-    """
-    raise NotImplementedError
+    while queue:
+        current = queue.popleft()
+        order.append(current)
+
+        for neighbor in graph[current]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    return order
 
 
 def dijkstra_distances(graph: Graph, start: str) -> dict[str, float]:
-    """Return shortest distances from start to every reachable node.
+    """Return shortest distances from start to every reachable node."""
+    if start not in graph:
+        return {}
 
-    Requirements:
-    - Use Dijkstra's algorithm.
-    - Use heapq as the priority queue.
-    - If start is missing, return {}.
-    - Ignore unreachable nodes; they should not appear in the result.
-    - All edge weights must be positive integers.
-    - Raise ValueError if a zero or negative weight is found.
+    distances = {start: 0.0}
+    pq = [(0.0, start)]
 
-    Example:
-        graph = {
-            "A": {"B": 4, "C": 2},
-            "B": {"A": 4},
-            "C": {"A": 2}
-        }
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
 
-        dijkstra_distances(graph, "A") -> {"A": 0, "B": 4, "C": 2}
+        # Skip if we already found a better path
+        if current_dist > distances.get(current_node, float('inf')):
+            continue
 
-    Complexity target:
-    - Time: O((V + E) log V)
-    - Space: O(V)
-    """
-    raise NotImplementedError
+        for neighbor, weight in graph[current_node].items():
+            if weight <= 0:
+                raise ValueError("Found a zero or negative weight.")
+
+            distance = current_dist + weight
+
+            # If we found a shorter path to the neighbor, update it
+            if distance < distances.get(neighbor, float('inf')):
+                distances[neighbor] = float(distance)
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
 
 
 def shortest_path(graph: Graph, start: str, target: str) -> list[str]:
-    """Return the shortest path from start to target.
+    """Return the shortest path from start to target."""
+    if start not in graph or target not in graph:
+        return []
+    if start == target:
+        return [start]
 
-    Requirements:
-    - Use Dijkstra's algorithm with path reconstruction.
-    - Return a list of node names in path order.
-    - If start or target is missing, return [].
-    - If target is unreachable from start, return [].
-    - If start == target and start exists, return [start].
-    - Raise ValueError if a zero or negative weight is found.
+    distances = {start: 0.0}
+    previous = {start: None}
+    pq = [(0.0, start)]
 
-    Example:
-        shortest_path(graph, "A", "D") -> ["A", "C", "D"]
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
 
-    Complexity target:
-    - Dijkstra portion: O((V + E) log V)
-    - Path reconstruction: O(P), where P is the number of nodes in the path
-    """
-    raise NotImplementedError
+        if current_node == target:
+            break
+
+        if current_dist > distances.get(current_node, float('inf')):
+            continue
+
+        for neighbor, weight in graph[current_node].items():
+            if weight <= 0:
+                raise ValueError("Found a zero or negative weight.")
+
+            distance = current_dist + weight
+
+            if distance < distances.get(neighbor, float('inf')):
+                distances[neighbor] = float(distance)
+                previous[neighbor] = current_node
+                heapq.heappush(pq, (distance, neighbor))
+
+    # Reconstruct path by walking backwards
+    if target not in previous:
+        return []
+
+    path = []
+    current = target
+    while current is not None:
+        path.append(current)
+        current = previous.get(current)
+
+    path.reverse()
+    return path
 
 
 def demo() -> None:
-    """Print a short demonstration of your project.
+    """Print a short demonstration of your project."""
+    print("================================")
+    print("   Campus Pathfinder Demo       ")
+    print("================================")
 
-    Your demo should:
-    1. Load your graph from data/map.json.
-    2. Print the number of locations.
-    3. Print BFS order from one location.
-    4. Print shortest distances from one location.
-    5. Print one shortest path.
+    try:
+        graph = load_graph("data/map.json")
+        nodes = list(graph.keys())
+        print(f"Loaded {len(nodes)} locations successfully.")
 
-    This function is not directly graded by the public tests, but it is useful
-    for your presentation/demo.
-    """
-    raise NotImplementedError
+        # Stretch feature: Simple command-line menu
+        while True:
+            print("\nOptions:")
+            print("1. Show BFS traversal")
+            print("2. Find shortest path between two buildings")
+            print("3. Exit")
+
+            choice = input("Enter choice (1-3): ").strip()
+
+            if choice == "1":
+                start = "Main Gate"
+                print(f"\nBFS Order from '{start}':")
+                print(" -> ".join(bfs_order(graph, start)))
+
+            elif choice == "2":
+                start = "Main Gate"
+                target = "IT Building"
+                print(f"\nCalculating route from {start} to {target}...")
+
+                path = shortest_path(graph, start, target)
+                dists = dijkstra_distances(graph, start)
+
+                if path:
+                    print("Route: " + " -> ".join(path))
+                    print(f"Total walking time: {int(dists[target])} minutes.")
+                else:
+                    print("No path found.")
+
+            elif choice == "3":
+                print("Exiting demo. Goodbye!")
+                break
+            else:
+                print("Invalid choice.")
+
+    except Exception as e:
+        print(f"Demo failed to run: {e}")
 
 
 if __name__ == "__main__":

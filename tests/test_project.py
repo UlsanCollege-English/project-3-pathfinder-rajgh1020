@@ -186,3 +186,83 @@ def test_shortest_path_unreachable_returns_empty_list():
     graph = disconnected_graph()
 
     assert shortest_path(graph, "A", "Y") == []
+
+# ==========================================
+# Custom Tests added for Project Requirements
+# ==========================================
+
+def test_load_graph_rejects_non_integer_weights(tmp_path):
+    """Custom Test 1: Ensure float or boolean weights raise a ValueError during load."""
+    graph_data = {
+        "A": {"B": 2.5},
+        "B": {"A": 2.5},
+    }
+    map_path = tmp_path / "bad_map_float.json"
+    map_path.write_text(json.dumps(graph_data), encoding="utf-8")
+
+    with pytest.raises(ValueError):
+        load_graph(str(map_path))
+
+
+def test_shortest_path_rejects_negative_weights():
+    """Custom Test 2: Ensure shortest_path algorithm raises ValueError on negative weights."""
+    graph = {
+        "A": {"B": -5},
+        "B": {"A": -5}
+    }
+
+    with pytest.raises(ValueError):
+        shortest_path(graph, "A", "B")
+
+
+def test_single_node_graph_operations():
+    """Custom Test 3: Ensure all algorithms handle a graph with only one node correctly."""
+    graph = {"A": {}}
+
+    assert bfs_order(graph, "A") == ["A"]
+    assert dijkstra_distances(graph, "A") == {"A": 0.0}
+    assert shortest_path(graph, "A", "A") == ["A"]
+
+
+
+def test_custom_map_loads_correctly(tmp_path):
+    """Test 1: Verify my own map logic works as expected."""
+    my_map = {
+        "Library": {"IT Building": 2},
+        "IT Building": {"Library": 2}
+    }
+    file_path = tmp_path / "my_map.json"
+    file_path.write_text(json.dumps(my_map), encoding="utf-8")
+
+    loaded = load_graph(str(file_path))
+    assert loaded == my_map
+
+
+def test_shortest_path_with_float_weights():
+    """Test 2: Make sure load_graph catches float weights (like 2.5)."""
+    bad_data = {
+        "A": {"B": 2.5},
+        "B": {"A": 2.5}
+    }
+    import tempfile
+    import os
+
+    # Write bad data to a temporary file
+    fd, path = tempfile.mkstemp(suffix=".json")
+    with os.fdopen(fd, 'w') as f:
+        json.dump(bad_data, f)
+
+    with pytest.raises(ValueError):
+        load_graph(path)
+
+    os.remove(path)
+
+
+def test_dijkstra_raises_error_on_negative_weight_in_traversal():
+    """Test 3: Ensure algorithms abort if a bad weight slips through."""
+    bad_graph = {
+        "A": {"B": -4},
+        "B": {"A": -4}
+    }
+    with pytest.raises(ValueError):
+        dijkstra_distances(bad_graph, "A")
