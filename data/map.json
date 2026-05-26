@@ -1,26 +1,42 @@
 {
-  "Gate": {
-    "Food Court": 4,
-    "Main Stage": 7
+  "Taehwa River National Garden": {
+    "Ulsan City Hall": 10,
+    "Ulsan University": 15
   },
-  "Food Court": {
-    "Gate": 4,
-    "Rest Area": 3
+  "Ulsan City Hall": {
+    "Taehwa River National Garden": 10,
+    "Lotte Shopping Plaza": 8,
+    "Ulsan Grand Park": 12
   },
-  "Main Stage": {
-    "Gate": 7,
-    "First Aid": 2
+  "Ulsan University": {
+    "Taehwa River National Garden": 15,
+    "Ulsan Station (KTX)": 20,
+    "Ulsan Grand Park": 18
   },
-  "Rest Area": {
-    "Food Court": 3,
-    "Game Booth": 5
+  "Lotte Shopping Plaza": {
+    "Ulsan City Hall": 8,
+    "Ulsan Grand Park": 15,
+    "Jangsaengpo Whale Museum": 20,
+    "Hyundai Motors Plant": 18
   },
-  "First Aid": {
-    "Main Stage": 2,
-    "Game Booth": 6
+  "Ulsan Grand Park": {
+    "Ulsan City Hall": 12,
+    "Lotte Shopping Plaza": 15,
+    "Ulsan University": 18
   },
-  "Game Booth": {
-    "Rest Area": 5,
-    "First Aid": 6
+  "Jangsaengpo Whale Museum": {
+    "Lotte Shopping Plaza": 20,
+    "Daewangam Park": 25
+  },
+  "Hyundai Motors Plant": {
+    "Lotte Shopping Plaza": 18,
+    "Daewangam Park": 30
+  },
+  "Daewangam Park": {
+    "Jangsaengpo Whale Museum": 25,
+    "Hyundai Motors Plant": 30
+  },
+  "Ulsan Station (KTX)": {
+    "Ulsan University": 20
   }
 }

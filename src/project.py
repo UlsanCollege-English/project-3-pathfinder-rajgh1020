@@ -143,7 +143,7 @@ def shortest_path(graph: Graph, start: str, target: str) -> list[str]:
 def demo() -> None:
     """Print a short demonstration of your project."""
     print("================================")
-    print("   Campus Pathfinder Demo       ")
+    print("   Dynamic Pathfinder Demo      ")
     print("================================")
 
     try:
@@ -151,39 +151,50 @@ def demo() -> None:
         nodes = list(graph.keys())
         print(f"Loaded {len(nodes)} locations successfully.")
 
-        # Stretch feature: Simple command-line menu
+        # Stop safely if the JSON file is empty or only has 1 node
+        if len(nodes) < 2:
+            print("Not enough locations in the map to run a demonstration.")
+            return
+
+        # DYNAMICALLY select locations based on whatever data file is loaded
+        start_node = nodes[0]
+        target_node = nodes[-1]
+
         while True:
             print("\nOptions:")
-            print("1. Show BFS traversal")
-            print("2. Find shortest path between two buildings")
-            print("3. Exit")
+            print(f"1. Show BFS traversal (Starting at '{start_node}')")
+            print(f"2. Find shortest path (From '{start_node}' to '{target_node}')")
+            print("3. Show all available map locations")
+            print("4. Exit")
 
-            choice = input("Enter choice (1-3): ").strip()
+            choice = input("Enter choice (1-4): ").strip()
 
             if choice == "1":
-                start = "Main Gate"
-                print(f"\nBFS Order from '{start}':")
-                print(" -> ".join(bfs_order(graph, start)))
+                print(f"\nBFS Order from '{start_node}':")
+                print(" -> ".join(bfs_order(graph, start_node)))
 
             elif choice == "2":
-                start = "Main Gate"
-                target = "IT Building"
-                print(f"\nCalculating route from {start} to {target}...")
+                print(f"\nCalculating route from '{start_node}' to '{target_node}'...")
 
-                path = shortest_path(graph, start, target)
-                dists = dijkstra_distances(graph, start)
+                path = shortest_path(graph, start_node, target_node)
+                dists = dijkstra_distances(graph, start_node)
 
                 if path:
                     print("Route: " + " -> ".join(path))
-                    print(f"Total walking time: {int(dists[target])} minutes.")
+                    print(f"Total weight/cost: {int(dists.get(target_node, 0))}")
                 else:
                     print("No path found.")
 
             elif choice == "3":
+                print("\nLocations found in your map.json:")
+                for loc in nodes:
+                    print(f" - {loc}")
+
+            elif choice == "4":
                 print("Exiting demo. Goodbye!")
                 break
             else:
-                print("Invalid choice.")
+                print("Invalid choice. Please enter a number from 1 to 4.")
 
     except Exception as e:
         print(f"Demo failed to run: {e}")
