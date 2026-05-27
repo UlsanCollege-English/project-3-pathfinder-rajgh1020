@@ -1,42 +1,56 @@
 {
-  "Taehwa River National Garden": {
-    "Ulsan City Hall": 10,
-    "Ulsan University": 15
-  },
   "Ulsan City Hall": {
-    "Taehwa River National Garden": 10,
-    "Lotte Shopping Plaza": 8,
-    "Ulsan Grand Park": 12
+    "Lotte Department Store": 6,
+    "Taehwa River Station": 8,
+    "Taehwa River National Garden": 7,
+    "Ulsan Grand Park": 10
   },
-  "Ulsan University": {
-    "Taehwa River National Garden": 15,
-    "Ulsan Station (KTX)": 20,
-    "Ulsan Grand Park": 18
+  "Lotte Department Store": {
+    "Ulsan City Hall": 6,
+    "Taehwa River Station": 5,
+    "Jangsaengpo Whale Museum": 15
   },
-  "Lotte Shopping Plaza": {
+  "Taehwa River Station": {
     "Ulsan City Hall": 8,
-    "Ulsan Grand Park": 15,
-    "Jangsaengpo Whale Museum": 20,
-    "Hyundai Motors Plant": 18
+    "Lotte Department Store": 5,
+    "Hyundai Motors Plant": 12,
+    "Ulsan Airport": 15
+  },
+  "Taehwa River National Garden": {
+    "Ulsan City Hall": 7,
+    "Ulsan University": 12,
+    "KTX Ulsan Station": 28,
+    "Ulsan Airport": 14
   },
   "Ulsan Grand Park": {
-    "Ulsan City Hall": 12,
-    "Lotte Shopping Plaza": 15,
-    "Ulsan University": 18
+    "Ulsan City Hall": 10,
+    "Ulsan University": 8
   },
-  "Jangsaengpo Whale Museum": {
-    "Lotte Shopping Plaza": 20,
-    "Daewangam Park": 25
+  "Ulsan University": {
+    "Taehwa River National Garden": 12,
+    "Ulsan Grand Park": 8,
+    "KTX Ulsan Station": 25
+  },
+  "KTX Ulsan Station": {
+    "Ulsan University": 25,
+    "Taehwa River National Garden": 28
+  },
+  "Ulsan Airport": {
+    "Taehwa River Station": 15,
+    "Taehwa River National Garden": 14
   },
   "Hyundai Motors Plant": {
-    "Lotte Shopping Plaza": 18,
-    "Daewangam Park": 30
+    "Taehwa River Station": 12,
+    "Jangsaengpo Whale Museum": 18,
+    "Daewangam Park": 20
+  },
+  "Jangsaengpo Whale Museum": {
+    "Lotte Department Store": 15,
+    "Hyundai Motors Plant": 18,
+    "Daewangam Park": 22
   },
   "Daewangam Park": {
-    "Jangsaengpo Whale Museum": 25,
-    "Hyundai Motors Plant": 30
-  },
-  "Ulsan Station (KTX)": {
-    "Ulsan University": 20
+    "Hyundai Motors Plant": 20,
+    "Jangsaengpo Whale Museum": 22
   }
 }
